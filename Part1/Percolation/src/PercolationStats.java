@@ -6,6 +6,7 @@ public class PercolationStats {
 
     private double[] percolationThreshold;
     private int t;
+    private final double factor = 1.96;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -17,7 +18,7 @@ public class PercolationStats {
 
         for (int i = 0; i < t; i++) {
             Percolation experiment = new Percolation(n);
-            while(!experiment.percolates()) {
+            while (!experiment.percolates()) {
                 int row = StdRandom.uniformInt(1, n + 1);
                 int col = StdRandom.uniformInt(1, n + 1);
                 experiment.open(row, col);
@@ -38,19 +39,19 @@ public class PercolationStats {
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - 1.96 * stddev() / Math.sqrt(t);
+        return mean() - factor * stddev() / Math.sqrt(t);
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean() + 1.96 * stddev() / Math.sqrt(t);
+        return mean() + factor * stddev() / Math.sqrt(t);
     }
 
     // test client (see below)
     public static void main(String[] args) {
         int n = Integer.parseInt(args[0]);
-        int T = Integer.parseInt(args[1]);
-        PercolationStats stats = new PercolationStats(n, T);
+        int t = Integer.parseInt(args[1]);
+        PercolationStats stats = new PercolationStats(n, t);
         StdOut.println("mean                    = " + stats.mean());
         StdOut.println("stddev                  = " + stats.stddev());
         StdOut.println("95% confidence interval = [" + stats.confidenceLo() + ", " + stats.confidenceHi() + "]");
